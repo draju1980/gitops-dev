@@ -1,0 +1,15 @@
+environments:
+  default:
+    values:
+      - github:
+          accesstoken: "{{ env "GITHUB_TOKEN" }}"
+---
+helmfiles:
+  - path: git::https://git:{{ .Values.github.accesstoken }}@github.com/draju1980/gitops-cluster-services/helmfile.yaml.gotmpl
+    values:
+      - clusterName: gitops-dev
+        ingressController:
+          replicaCount: 1
+          cloudflared:
+            replicaCount: 1
+            protocol: auto

@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-services
+  namespace: argo-cd
+spec:
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  destination:
+    # namespace: DO-NOT-SET! Application is multi-namespaced.
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    repoURL: https://github.com/draju1980/gitops-dev.git
+    targetRevision: main
+    plugin:
+      name: helmfile
