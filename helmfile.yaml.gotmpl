@@ -12,6 +12,10 @@ environments:
           cloudflared:
             replicaCount: "{{ env "CLOUDFLARED_REPLICAS" | default 1 }}"
             protocol: "{{ env "CLOUDFLARED_PROTOCOL" | default "auto" }}"
+      - vaultSecretPaths:
+          argocd: "gitops/dev/argocd"
+          cloudflare: "gitops/dev/cloudflare"
+          grafanaCloud: "gitops/dev/grafana-cloud"
 ---
 helmfiles:
   - path: ../gitops-cluster-services/helmfile.yaml
@@ -28,3 +32,4 @@ helmfiles:
           version: {{ .Values.externalVault.version }}
           authPath: {{ .Values.externalVault.authPath }}
           authRole: {{ .Values.externalVault.authRole }}
+      - vaultSecretPaths: {{ .Values.vaultSecretPaths | toYaml | nindent 10 }}
