@@ -17,7 +17,7 @@ environments:
           grafanaCloud: "gitops/dev/grafana-cloud"
 ---
 helmfiles:
-  - path: ../gitops-cluster-services/helmfile.yaml
+  - path: git::https://github.com/draju1980/gitops-cluster-services.git@/helmfile.yaml.gotmpl
     values:
       - clusterName: gitops-dev
       - ingressController:
