@@ -101,19 +101,13 @@ kubectl apply -f application.yaml
 
 Or sync via ArgoCD UI - no setup required.
 
-## Vault Secret Organization
+## Vault Secret Management
 
-Secrets in Vault should follow this structure:
+The External Secrets Operator automatically retrieves secrets from Vault and creates corresponding Kubernetes secrets in appropriate namespaces during deployment.
 
-```
-secret/
-└── gitops/
-    └── dev/
-        └── <service-name>/
-            └── <secret-name>
-```
+**Before bootstrap deployment**, ensure all required secrets are stored in your Vault instance. The gitops-cluster-services helmfile expects secrets at specific paths relative to your environment (dev/staging/prod).
 
-The External Secrets Operator automatically retrieves secrets from Vault and creates Kubernetes secrets in appropriate namespaces.
+Secrets are synced automatically with configurable refresh intervals (default: 1 hour). Team members never need direct Vault access after initial setup.
 
 ## Testing Cluster Services Locally
 
