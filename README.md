@@ -41,7 +41,7 @@ No required variables - all repos are public. Vault credentials below are only n
 
 ### Vault Configuration (Bootstrap Only)
 
-These variables are **only required for first-time deployment**. After initial bootstrap, ArgoCD manages vault credentials internally.
+These variables are **only required for first-time deployment**. After initial bootstrap, ArgoCD manages vault credentials internally via External Secrets Operator.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -51,6 +51,16 @@ These variables are **only required for first-time deployment**. After initial b
 | `EXTERNAL_VAULT_PATH` | Vault KV secret path | `secret` |
 | `EXTERNAL_VAULT_AUTH_PATH` | Kubernetes auth path in Vault | `kubernetes` |
 | `EXTERNAL_VAULT_AUTH_ROLE` | Kubernetes auth role name | `external-secrets` |
+
+#### Vault Secret Structure
+
+Before deploying, store the ArgoCD admin password hash in Vault. Generate the hash:
+
+```bash
+htpasswd -nbBC 10 "" "YourStrongPassword" | sed 's/^://'
+```
+
+Then store it in Vault at the appropriate path for your environment (the gitops-cluster-services will reference this via External Secrets Operator).
 
 ### Optional Variables
 
