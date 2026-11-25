@@ -1,15 +1,30 @@
 environments:
   default:
     values:
-      - github:
-          accesstoken: "{{ env "GITHUB_TOKEN" }}"
+      - externalVault:
+          server: "{{ env "EXTERNAL_VAULT_SERVER" }}"
+          path: "{{ env "EXTERNAL_VAULT_PATH" | default "secret" }}"
+          version: "v2"
+          authPath: "{{ env "EXTERNAL_VAULT_AUTH_PATH" | default "kubernetes" }}"
+          authRole: "{{ env "EXTERNAL_VAULT_AUTH_ROLE" | default "external-secrets" }}"
+      - ingressController:
+          replicaCount: "{{ env "INGRESS_REPLICAS" | default 1 }}"
+          cloudflared:
+            replicaCount: "{{ env "CLOUDFLARED_REPLICAS" | default 1 }}"
+            protocol: "{{ env "CLOUDFLARED_PROTOCOL" | default "auto" }}"
 ---
 helmfiles:
-  - path: git::https://git:{{ .Values.github.accesstoken }}@github.com/draju1980/gitops-cluster-services/helmfile.yaml.gotmpl
+  - path: ../gitops-cluster-services/helmfile.yaml
     values:
       - clusterName: gitops-dev
-        ingressController:
-          replicaCount: 1
+      - ingressController:
+          replicaCount: {{ .Values.ingressController.replicaCount }}
           cloudflared:
-            replicaCount: 1
-            protocol: auto
+            replicaCount: {{ .Values.ingressController.cloudflared.replicaCount }}
+            protocol: {{ .Values.ingressController.cloudflared.protocol }}
+      - externalVault:
+          server: {{ .Values.externalVault.server }}
+          path: {{ .Values.externalVault.path }}
+          version: {{ .Values.externalVault.version }}
+          authPath: {{ .Values.externalVault.authPath }}
+          authRole: {{ .Values.externalVault.authRole }}
