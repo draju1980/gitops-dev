@@ -168,6 +168,30 @@ See what would change:
 helmfile diff .
 ```
 
+### Destroy (Reset Cluster)
+
+Remove all cluster services and reset the cluster to a fresh state without any deployed components:
+
+```sh
+# Source environment variables first
+source .env
+
+# Option 1: Remove all helmfile-deployed resources
+helmfile destroy .
+
+# Option 2: Delete specific namespaces (removes all resources in them)
+kubectl delete namespace monitoring argo-cd cloudflare vault external-secrets kube-system external-dns
+```
+
+**Warning:** This will delete all cluster services, configurations, and data. Use only for cleanup or testing purposes.
+
+After cleanup, you can redeploy with:
+
+```sh
+source .env
+helmfile apply .
+```
+
 ## ArgoCD Integration
 
 The `application.yaml` file defines the ArgoCD Application CRD for continuous syncing:
