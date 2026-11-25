@@ -85,21 +85,31 @@ helmfile template . | kubectl create -f - 2>/dev/null
 helmfile template . | kubectl apply -f - --server-side=true 2>/dev/null
 ```
 
-After bootstrap completes:
-- External Secrets Operator is deployed and configured
-- ArgoCD stores vault credentials in Kubernetes secrets
-- Cluster services have access to vault via External Secrets Operator
+**What happens during bootstrap:**
+1. Vault credentials (VAULT_ADDR, VAULT_TOKEN) fetch secrets from Vault:
+   - ArgoCD admin password hash
+   - Grafana Cloud credentials (username, password, url, type)
+   - Cloudflare API credentials (apiToken, accountId, zoneId)
+2. External Secrets Operator pulls these secrets and creates Kubernetes secrets
+3. ArgoCD deployment reads and uses these K8s secrets
+4. **ArgoCD server stores all secrets internally** for future use
 
 ### Phase 2: Team Member Deployments
 
-After initial bootstrap, team members can deploy without any credentials:
+After initial bootstrap, team members can deploy without any vault credentials:
 
 ```sh
-# No credentials needed - deploy via ArgoCD
+# No vault credentials needed - deploy via ArgoCD
 kubectl apply -f application.yaml
 ```
 
 Or sync via ArgoCD UI - no setup required.
+
+**Why team members don't need credentials:**
+- ArgoCD server already has all secrets stored internally
+- External Secrets Operator maintains secret synchronization
+- Kubernetes secrets are managed automatically
+- No one needs direct vault access after bootstrap
 
 ## Vault Secret Management
 
