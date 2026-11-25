@@ -6,7 +6,6 @@ environments:
           path: "{{ env "EXTERNAL_VAULT_PATH" | default "secret" }}"
           version: "v2"
           authPath: "{{ env "EXTERNAL_VAULT_AUTH_PATH" | default "kubernetes" }}"
-          authRole: "{{ env "EXTERNAL_VAULT_AUTH_ROLE" | default "external-secrets" }}"
       - ingressController:
           replicaCount: "{{ env "INGRESS_REPLICAS" | default 1 }}"
           cloudflared:
@@ -31,5 +30,4 @@ helmfiles:
           path: {{ .Values.externalVault.path }}
           version: {{ .Values.externalVault.version }}
           authPath: {{ .Values.externalVault.authPath }}
-          authRole: {{ .Values.externalVault.authRole }}
       - vaultSecretPaths: {{ .Values.vaultSecretPaths | toYaml | nindent 10 }}
