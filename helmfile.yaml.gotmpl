@@ -7,6 +7,7 @@ environments:
           version: "v2"
           authPath: "{{ env "EXTERNAL_VAULT_AUTH_PATH" | default "kubernetes" }}"
       - ingressController:
+          clusterDomain: "{{ env "CLUSTER_DOMAIN" | default "example.com" }}"
           replicaCount: "{{ env "INGRESS_REPLICAS" | default 1 }}"
           cloudflared:
             replicaCount: "{{ env "CLOUDFLARED_REPLICAS" | default 1 }}"
